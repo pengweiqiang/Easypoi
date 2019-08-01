@@ -19,7 +19,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import java.io.FileOutputStream;
 
 /**
- * TODO 添加类的描述 
+ * 使用SXSSFWorkbook导出大数据.
  *
  * @author pengweiqiang
  * @version V1.0 2019/7/31
