@@ -21,6 +21,9 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * easypoi导出大数据功能.
@@ -30,22 +33,36 @@ import java.util.List;
  */
 public class ExportEasyPoiTest {
 
-    public static void main(String[] args) {
-        ExportEasyPoiTest exportEasyPoiTest = new ExportEasyPoiTest();
-        try {
-            exportEasyPoiTest.bigDataExport();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void main(String[] args) throws Exception{
+        ExecutorService executors = Executors.newFixedThreadPool(10);
+        final CountDownLatch countDownLatch = new CountDownLatch(10);
+        for(int i =0 ;i<10;i++) {
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    ExportEasyPoiTest exportEasyPoiTest = new ExportEasyPoiTest();
+                    try {
+                        exportEasyPoiTest.bigDataExport();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    countDownLatch.countDown();
+                }
+            };
+            executors.execute(runnable);
         }
+        countDownLatch.await();
+
+
     }
 
     public void bigDataExport() throws Exception {
         List<MsgClient> list = new ArrayList<MsgClient>();
         Workbook workbook = null;
         Date start = new Date();
-        ExportParams params = new ExportParams("大数据测试", "测试");
+        ExportParams params = new ExportParams();
+        params.setSheetName("测试数据");
         //一百万数据量
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 100000; i++) {
             MsgClient client = new MsgClient();
             client.setBirthday(new Date());
             client.setClientName("小明" + i);
@@ -55,9 +72,13 @@ public class ExportEasyPoiTest {
             client.setRemark("测试" + i);
             client.setEmail("123123");
             client.setHouseholdAddress("水电费水电费水电费");
-            client.setIdcardAdress("123123123123123");
+            client.setIdcardAdress("颇尔快了呢打开你率是镂空打发开连锁的");
+            client.setPhoneA("s123123s23");
+            client.setPhoneB("120398123123");
+            client.setPhoneC("1239493556");
             client.setTelephone("123123123123");
             client.setIdentifyType("!23dfsd ");
+            client.setWorkAddress("破损代付款水电费4的烦恼是快递费可适当减肥");
             client.setLiveAddress("s水电费水电费了是的覅而");
             MsgClientGroup group = new MsgClientGroup();
             group.setGroupName("测试" + i);
